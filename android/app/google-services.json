@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "776070619459",
+    "project_id": "unite-12717",
+    "storage_bucket": "unite-12717.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:776070619459:android:c45e8538cf0c94ecd4cff6",
+        "android_client_info": {
+          "package_name": "com.example.unite"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBrdMzEzGFPVa6Osej24fEMZ_RVXtO5-Y0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
