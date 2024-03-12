@@ -1,23 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:unite/features/chat/models/chat_model.dart';
+import 'package:unite/utils/helper/firebase_helper.dart';
 
 class ConversationController extends GetxController {
   /* Variables */
-  var chatList = Chat.generate().obs;
 
   /* Controllers */
   final ScrollController scrollController = ScrollController();
-  final TextEditingController textEditingController = TextEditingController();
+  final TextEditingController inputController = TextEditingController();
   final FocusNode focusNode = FocusNode();
 
-  /* Intents */
-  Future<void> onFieldSubmitted() async {
-    if (!isTextFieldEnable) return;
+  RxString messageText = ''.obs;
 
-    // Add to chat listeners
-    var newChat = Chat.sent(message: textEditingController.text);
-    chatList.add(newChat);
+  Future<void> onSentMessage() async {
+    if (messageText.value != '' && messageText.isNotEmpty) {
+      await FirebaseHelpers.addTextMessage(
+          messageText: messageText.value, receiverId: "12");
+    }
 
     // Scroll to the bottom
     scrollController.animateTo(
@@ -25,15 +24,7 @@ class ConversationController extends GetxController {
       duration: const Duration(milliseconds: 300),
       curve: Curves.easeInOut,
     );
-
-    textEditingController.clear();
+    inputController.clear();
     update(); // This is the GetX way to notify listeners
   }
-
-  void onFieldChanged(String term) {
-    update(); // Notify listeners whenever the field changes
-  }
-
-  /* Getters */
-  bool get isTextFieldEnable => textEditingController.text.isNotEmpty;
 }

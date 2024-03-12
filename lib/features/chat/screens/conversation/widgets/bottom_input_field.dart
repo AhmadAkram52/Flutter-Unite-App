@@ -29,19 +29,21 @@ class BottomInputField extends StatelessWidget {
             children: [
               TextField(
                 focusNode: chatController.focusNode,
-                onChanged: chatController.onFieldChanged,
-                controller: chatController.textEditingController,
+                onChanged: (text) {
+                  chatController.messageText.value = text;
+                },
+                controller: chatController.inputController,
                 maxLines: null,
                 textAlignVertical: TextAlignVertical.top,
                 decoration: InputDecoration(
-                  fillColor: UColors.inputFilledColor,
+                  fillColor: UColors.inputColor,
                   filled: true,
                   contentPadding: const EdgeInsets.only(
                     right: 42,
                     left: 16,
                     top: 18,
                   ),
-                  hintText: 'message',
+                  hintText: 'message here.....',
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide.none,
                     borderRadius: BorderRadius.circular(30),
@@ -56,25 +58,23 @@ class BottomInputField extends StatelessWidget {
               Positioned(
                 bottom: 0,
                 right: 0,
-                child: IconButton(
-                  style: IconButton.styleFrom(
-                    backgroundColor: UColors.primary,
-                  ),
-                  color: UColors.white,
-                  icon: const Icon(Iconsax.send_1),
-
-                  // icon: SvgPicture.asset(
-                  //   "assets/icons/send.svg",
-                  //   colorFilter: ColorFilter.mode(
-                  //     context.select<ChatController, bool>(
-                  //             (value) => value.isTextFieldEnable)
-                  //         ? const Color(0xFF007AFF)
-                  //         : const Color(0xFFBDBDC2),
-                  //     BlendMode.srcIn,
-                  //   ),
-                  // ),
-                  onPressed: () => chatController.onFieldSubmitted,
-                ),
+                child: Obx(() {
+                  return IconButton(
+                    disabledColor: UColors.disable,
+                    style: IconButton.styleFrom(
+                        // backgroundColor: UColors.primary,
+                        // disabledBackgroundColor: Color(0xFF666666),
+                        ),
+                    color: UColors.primary,
+                    icon: const Icon(
+                      Iconsax.send_21,
+                      size: 32,
+                    ),
+                    onPressed: chatController.messageText.value == ""
+                        ? null
+                        : () => chatController.onSentMessage(),
+                  );
+                }),
               ),
             ],
           ),

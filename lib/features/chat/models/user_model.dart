@@ -13,4 +13,13 @@ class UserModel {
       required this.image,
       required this.lastActive,
       required this.isOnline});
+
+  factory UserModel.fromJson(Map<String, dynamic> json) => UserModel(
+        uid: json['id'],
+        email: json['email'],
+        name: json['name'],
+        image: json['image'],
+        lastActive: json['lastActive'].toDate(),
+        isOnline: json['isOnline'] ?? false,
+      );
 }

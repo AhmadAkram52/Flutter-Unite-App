@@ -1,45 +1,17 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:unite/features/chat/models/user_model.dart';
 import 'package:unite/features/chat/screens/conversation/conversation_screen.dart';
 import 'package:unite/utils/constants/colors.dart';
-import 'package:unite/utils/constants/images_strings.dart';
+import 'package:unite/utils/helper/firebase_helper.dart';
 
 class ChatScreen extends StatelessWidget {
   const ChatScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final List<UserModel> users = [
-      UserModel(
-          uid: '1',
-          email: 'ahmadg34@gmail.com',
-          name: "Ahmad Akram",
-          image: UImages.user1,
-          lastActive: DateTime.now(),
-          isOnline: true),
-      UserModel(
-          uid: '2',
-          email: 'ahmadg34@gmail.com',
-          name: "Ammar Akram",
-          image: UImages.user1,
-          lastActive: DateTime.now(),
-          isOnline: true),
-      UserModel(
-          uid: '3',
-          email: 'ahmadg34@gmail.com',
-          name: "Umair",
-          image: UImages.user1,
-          lastActive: DateTime.now(),
-          isOnline: true),
-      UserModel(
-          uid: '4',
-          email: 'ahmadg34@gmail.com',
-          name: "Zeeshan Ahmad",
-          image: UImages.user1,
-          lastActive: DateTime.now(),
-          isOnline: true),
-    ];
+    // final UserController userController = Get.put(UserController());
+
     return DefaultTabController(
       length: 2,
       child: Scaffold(
@@ -61,37 +33,80 @@ class ChatScreen extends StatelessWidget {
           ),
           body: TabBarView(
             children: [
-              ListView.builder(
-                itemCount: users.length,
-                itemBuilder: (context, index) => InkWell(
-                  onTap: () => Get.to(ConversationScreen(
-                    user: users[index],
-                  )),
-                  child: ListTile(
-                    leading: Image(image: AssetImage(users[index].image)),
-                    title: Text(users[index].name),
-                    subtitle: const Text("UserName: Last Message"),
-                    trailing: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        const Text("12:12"),
-                        Container(
-                          padding: const EdgeInsets.all(7),
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: UColors.primary,
+              StreamBuilder<QuerySnapshot>(
+                stream: FirebaseHelpers.users,
+                builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else if (snapshot.hasError) {
+                    return const Center(
+                      child: Text("Error"),
+                    );
+                  } else if (snapshot.hasData) {
+                    return ListView.separated(
+                      itemCount: snapshot.data!.docs.length,
+                      itemBuilder: (context, index) => InkWell(
+                        onTap: () => Get.to(ConversationScreen(
+                          user: snapshot.data!.docs[index],
+                        )),
+                        child: ListTile(
+                          leading: Stack(
+                            children: [
+                              CircleAvatar(
+                                backgroundImage: NetworkImage(
+                                    snapshot.data?.docs[index]['image']),
+                              ),
+                              Positioned(
+                                  bottom: 2,
+                                  right: 2,
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: snapshot.data?.docs[index]
+                                              ['isOnline']
+                                          ? Colors.green
+                                          : Colors.grey,
+                                    ),
+                                    height: 10,
+                                    width: 10,
+                                  ))
+                            ],
                           ),
-                          child: const Text(
-                            "1",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(color: Colors.white),
+                          title: Text(snapshot.data?.docs[index]['name']),
+                          subtitle: const Text("UserName: Last Message"),
+                          trailing: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              const Text("12:12"),
+                              Container(
+                                padding: const EdgeInsets.all(7),
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: UColors.primary,
+                                ),
+                                child: const Text(
+                                  "1",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              )
+                            ],
                           ),
-                        )
-                      ],
-                    ),
-                  ),
-                ),
+                        ),
+                      ),
+                      separatorBuilder: (BuildContext context, int index) =>
+                          Container(
+                        color: Colors.grey,
+                        height: 1,
+                      ),
+                    );
+                  } else {
+                    return const Text("Ahmad");
+                  }
+                },
               ),
               const Center(child: Text("Akram")),
             ],

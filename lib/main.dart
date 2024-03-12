@@ -1,16 +1,27 @@
+import 'package:country_code_picker/country_code_picker.dart';
+import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:unite/features/Authentications/screens/login/login_screen.dart';
 import 'package:unite/features/chat/screens/chat/chat_screen.dart';
 import 'package:unite/firebase_options.dart';
+import 'package:unite/utils/constants/lists.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  await FirebaseAppCheck.instance.activate(
+    webProvider: ReCaptchaV3Provider('recaptcha-v3-site-key'),
+    androidProvider: AndroidProvider.debug,
+    appleProvider: AppleProvider.appAttest,
+  );
   runApp(const UniteApp());
+  // runApp(MyApp());
 }
 
 class UniteApp extends StatelessWidget {
@@ -24,7 +35,13 @@ class UniteApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const NavigationMenu(),
+      supportedLocales: ULists.listOfLocale,
+      localizationsDelegates: const [
+        CountryLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ],
+      home: const LoginScreen(),
     );
   }
 }
