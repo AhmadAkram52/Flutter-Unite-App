@@ -60,9 +60,7 @@ class LoginScreen extends StatelessWidget {
                   style: ElevatedButton.styleFrom(
                       backgroundColor: UColors.primary,
                       foregroundColor: Colors.white),
-                  onPressed: () {
-                    // Get.to(const SignupScreen());
-                  },
+                  onPressed: () => loginCtrl.formValidation(),
                   icon: const Icon(Icons.phone_android),
                   label: const Text("LogIn"),
                 )),

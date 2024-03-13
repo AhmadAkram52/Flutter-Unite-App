@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:unite/features/chat/models/user_model.dart';
+import 'package:unite/navigation_menu.dart';
 import 'package:unite/utils/helper/firebase_helper.dart';
 import 'package:unite/utils/helper/helper_funtions.dart';
 
@@ -25,24 +26,29 @@ class SignupController extends GetxController {
     final String password = passwordController.text.toString();
     final String rePassword = rePasswordController.text.toString();
     if (name.isNotEmpty) {
+      nameIsFill.value = true;
       if (UHelpers.isValidEmail(email)) {
         mailIsValid.value = true;
         if (password == rePassword) {
           passIsValid.value = true;
           Get.snackbar("Success", "Ahmad Akram");
           print("Ahmad:::::::::::::::Success");
-          signUpWithEmailAndPass(mail: email, password: password);
+          signUpWithEmailAndPass(mail: email, password: password, name: name);
         } else {
           passIsValid.value = false;
         }
       } else {
         mailIsValid.value = false;
       }
-    } else {}
+    } else {
+      nameIsFill.value = false;
+    }
   }
 
   signUpWithEmailAndPass(
-      {required String mail, required String password}) async {
+      {required String name,
+      required String mail,
+      required String password}) async {
     try {
       await FirebaseHelpers.fireAuth
           .createUserWithEmailAndPassword(
@@ -64,7 +70,8 @@ class SignupController extends GetxController {
             .doc(FirebaseHelpers.fireAuth.currentUser!.uid)
             .set(userModel.toFireStore())
             .then((value) {
-          Get.snackbar("Success SignUp", "User Success Created");
+          clearTextController();
+          Get.offAll(const NavigationMenu());
         });
       });
     } on FirebaseAuthException catch (e) {
@@ -78,6 +85,14 @@ class SignupController extends GetxController {
       print('Ahmad :::$e');
     }
   }
+
+  clearTextController() {
+    rePasswordController.clear();
+    passwordController.clear();
+    mailController.clear();
+    nameController.clear();
+  }
+}
 
 // toSubmit(BuildContext context) {
 //   if (numController.text.length != 10) {
@@ -141,4 +156,3 @@ class SignupController extends GetxController {
 //     print(" Ahmad Code Error::::: $e");
 //   }
 // }
-}

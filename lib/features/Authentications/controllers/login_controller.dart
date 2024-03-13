@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:unite/main.dart';
+import 'package:unite/navigation_menu.dart';
 import 'package:unite/utils/helper/firebase_helper.dart';
 import 'package:unite/utils/helper/helper_funtions.dart';
 
@@ -13,9 +13,6 @@ class LoginController extends GetxController {
   RxBool mailIsValid = true.obs;
 
   formValidation() async {
-    await FirebaseHelpers.fireAuth
-        .signOut()
-        .then((value) => Get.snackbar("LogOut", "LogOut user."));
     final String email = mailController.text.toString();
     final String password = passwordController.text.toString();
 
@@ -32,7 +29,10 @@ class LoginController extends GetxController {
     try {
       await FirebaseHelpers.fireAuth
           .signInWithEmailAndPassword(email: email, password: password)
-          .then((value) => Get.to(const NavigationMenu()));
+          .then((value) {
+        clearTextController();
+        Get.offAll(const NavigationMenu());
+      });
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         Get.snackbar("Please SignUp", "No user found for that email.");
@@ -42,5 +42,10 @@ class LoginController extends GetxController {
         print('Wrong password provided for that user.');
       }
     }
+  }
+
+  clearTextController() {
+    mailController.clear();
+    passwordController.clear();
   }
 }

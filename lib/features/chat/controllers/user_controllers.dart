@@ -1,19 +1,20 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:unite/features/chat/models/user_model.dart';
+import 'package:unite/utils/helper/firebase_helper.dart';
 
 class UserController extends GetxController {
-  List<UserModel> users = [];
+  final users = FirebaseHelpers.fireStore.collection("Users").snapshots();
+  List<UserModel> allUsers = [];
 
   Future<List<UserModel>> getAllUsers() async {
     FirebaseFirestore.instance
-        .collection('users')
+        .collection('Users')
         .snapshots(includeMetadataChanges: true)
         .listen((users) {
-      this.users =
-          users.docs.map((doc) => UserModel.fromJson(doc.data())).toList();
-      // notifyListener();
+      allUsers =
+          users.docs.map((doc) => UserModel.fromFireStore(doc.data())).toList();
     });
-    return users;
+    return allUsers;
   }
 }

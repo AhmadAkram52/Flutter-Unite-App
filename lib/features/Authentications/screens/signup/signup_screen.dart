@@ -26,19 +26,21 @@ class SignupScreen extends StatelessWidget {
           children: [
             SizedBox(
               width: Get.width * .8,
-              child: TextFormField(
-                controller: signupCtrl.nameController,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10)),
-                  hintText: 'Name',
-                  errorText: signupCtrl.nameController.text.isEmpty
-                      ? null
-                      : "Please fill This Field!",
-                  fillColor: Colors.grey,
-                  filled: true,
-                ),
-              ),
+              child: Obx(() {
+                return TextFormField(
+                  controller: signupCtrl.nameController,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10)),
+                    hintText: 'Name',
+                    errorText: signupCtrl.nameIsFill.value
+                        ? null
+                        : "Please fill This Field!",
+                    fillColor: Colors.grey,
+                    filled: true,
+                  ),
+                );
+              }),
             ),
             const SizedBox(height: 20),
             SizedBox(
@@ -113,10 +115,7 @@ class SignupScreen extends StatelessWidget {
             TextButton(
               onPressed: () {
                 Get.to(const LoginScreen());
-                signupCtrl.rePasswordController.clear();
-                signupCtrl.passwordController.clear();
-                signupCtrl.mailController.clear();
-                signupCtrl.nameController.clear();
+                signupCtrl.clearTextController();
               },
               child: const Text(
                 "Login!",

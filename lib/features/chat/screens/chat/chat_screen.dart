@@ -1,16 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:unite/features/chat/controllers/user_controllers.dart';
 import 'package:unite/features/chat/screens/conversation/conversation_screen.dart';
 import 'package:unite/utils/constants/colors.dart';
-import 'package:unite/utils/helper/firebase_helper.dart';
 
 class ChatScreen extends StatelessWidget {
   const ChatScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // final UserController userController = Get.put(UserController());
+    final UserController userCtrl = Get.put(UserController());
 
     return DefaultTabController(
       length: 2,
@@ -18,10 +18,10 @@ class ChatScreen extends StatelessWidget {
           appBar: AppBar(
             title: const Text("Chats"),
             centerTitle: true,
-            bottom: TabBar(
+            bottom: const TabBar(
               labelColor: UColors.primary,
               indicatorColor: UColors.primary,
-              tabs: const [
+              tabs: [
                 Tab(
                   text: "Quests",
                 ),
@@ -34,7 +34,7 @@ class ChatScreen extends StatelessWidget {
           body: TabBarView(
             children: [
               StreamBuilder<QuerySnapshot>(
-                stream: FirebaseHelpers.users,
+                stream: userCtrl.users,
                 builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(
@@ -83,7 +83,7 @@ class ChatScreen extends StatelessWidget {
                               const Text("12:12"),
                               Container(
                                 padding: const EdgeInsets.all(7),
-                                decoration: BoxDecoration(
+                                decoration: const BoxDecoration(
                                   shape: BoxShape.circle,
                                   color: UColors.primary,
                                 ),

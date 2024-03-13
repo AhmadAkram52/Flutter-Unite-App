@@ -16,8 +16,8 @@ class UserModel {
       required this.isOnline,
       required this.password});
 
-  factory UserModel.fromJson(Map<String, dynamic> json) => UserModel(
-        uid: json['id'],
+  factory UserModel.fromFireStore(Map<String, dynamic> json) => UserModel(
+        uid: json['uid'],
         name: json['name'],
         email: json['email'],
         password: json['password'],
@@ -28,7 +28,7 @@ class UserModel {
 
   Map<String, dynamic> toFireStore() {
     return {
-      "id": uid,
+      "uid": uid,
       "name": name,
       "email": email,
       "password": password,
