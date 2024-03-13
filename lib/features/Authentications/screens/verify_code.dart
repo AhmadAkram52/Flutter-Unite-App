@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
-import 'package:unite/features/Authentications/controllers/signup_controller.dart';
 
 class CodeVerifyScreen extends StatelessWidget {
   final String verificationId;
@@ -11,7 +10,6 @@ class CodeVerifyScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final formKey = GlobalKey<FormState>();
-    final SignupController signupCtrl = Get.put(SignupController());
     return Scaffold(
       appBar: AppBar(),
       body: Padding(
@@ -81,7 +79,7 @@ class CodeVerifyScreen extends StatelessWidget {
                   animationDuration: const Duration(milliseconds: 300),
                   enableActiveFill: true,
                   // errorAnimationController: errorController,
-                  controller: signupCtrl.codeController,
+                  // controller: SignupController.instance.codeController,
                   keyboardType: TextInputType.number,
                   onCompleted: (v) async {
                     if (v.length == 6) {

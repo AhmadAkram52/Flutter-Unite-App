@@ -26,10 +26,7 @@ class DefaultFirebaseOptions {
       case TargetPlatform.android:
         return android;
       case TargetPlatform.iOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for ios - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return ios;
       case TargetPlatform.macOS:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for macos - '
@@ -53,10 +50,19 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyBaRpE9ln9OcW6fvIgqNQRthiAbwYeso5Q',
-    appId: '1:823625903410:android:b23f085a29fcf2c7eefb2b',
-    messagingSenderId: '823625903410',
-    projectId: 'a-chat-db3ab',
-    storageBucket: 'a-chat-db3ab.appspot.com',
+    apiKey: 'AIzaSyAW2W4d4leBx9dKVPMZdWzrYFhmVEompdI',
+    appId: '1:309284086479:android:d820cf00233e9392798dba',
+    messagingSenderId: '309284086479',
+    projectId: 'unite-c0f3f',
+    storageBucket: 'unite-c0f3f.appspot.com',
+  );
+
+  static const FirebaseOptions ios = FirebaseOptions(
+    apiKey: 'AIzaSyCo2N1DcaLaME7ld827FWxFZMwSb2AwRlA',
+    appId: '1:309284086479:ios:ca01a5be7d9f7ae1798dba',
+    messagingSenderId: '309284086479',
+    projectId: 'unite-c0f3f',
+    storageBucket: 'unite-c0f3f.appspot.com',
+    iosBundleId: 'com.example.unite',
   );
 }

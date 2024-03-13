@@ -1,8 +1,9 @@
-import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:unite/features/Authentications/controllers/signup_controller.dart';
+import 'package:unite/features/Authentications/screens/login/login_screen.dart';
 import 'package:unite/utils/constants/colors.dart';
+import 'package:unite/utils/helper/helper_funtions.dart';
 
 class SignupScreen extends StatelessWidget {
   const SignupScreen({super.key});
@@ -11,98 +12,118 @@ class SignupScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final SignupController signupCtrl = Get.put(SignupController());
     return Scaffold(
-      appBar: AppBar(),
-      body: Padding(
-        padding: const EdgeInsets.all(10.0),
+      body: Container(
+        height: double.infinity,
+        width: double.infinity,
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/images/login_bg.png'),
+            fit: BoxFit.cover,
+          ),
+        ),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             SizedBox(
               width: Get.width * .8,
-              child: const Text(
-                textAlign: TextAlign.center,
-                "Let’s start from your phone number",
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.w700),
+              child: TextFormField(
+                controller: signupCtrl.nameController,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10)),
+                  hintText: 'Name',
+                  errorText: signupCtrl.nameController.text.isEmpty
+                      ? null
+                      : "Please fill This Field!",
+                  fillColor: Colors.grey,
+                  filled: true,
+                ),
               ),
             ),
-            SizedBox(height: Get.height * .01),
-            Center(
-              child: SizedBox(
+            const SizedBox(height: 20),
+            SizedBox(
                 width: Get.width * .8,
-                child: const Text(
-                    "Your number will be used only in urgent situations and won’t be forwarded to third parties. ",
-                    textAlign: TextAlign.center,
-                    style:
-                        TextStyle(fontSize: 16, fontWeight: FontWeight.w400)),
-              ),
-            ),
-            SizedBox(height: Get.height * .10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                Container(
-                  decoration: const BoxDecoration(
-                    border: Border(
-                        bottom: BorderSide(color: Colors.grey, width: 2)),
-                  ),
-                  child: CountryCodePicker(
-                    onChanged: (val) {
-                      signupCtrl.dailCode.value = val.toString();
-                      // print("Ahmad : $val");
+                child: Obx(() {
+                  return TextFormField(
+                    controller: signupCtrl.mailController,
+                    onChanged: (email) {
+                      if (UHelpers.isValidEmail(email)) {
+                        signupCtrl.mailIsValid.value = true;
+                      }
                     },
-                    initialSelection: 'PK',
-                    showFlagDialog: true,
-                    padding: EdgeInsets.zero,
-                    comparator: (a, b) => b.name!.compareTo(a.name.toString()),
-                    onInit: (code) {
-                      signupCtrl.dailCode.value = code!.dialCode!;
-                    },
-                    boxDecoration: const BoxDecoration(
-                      border: Border(
-                        bottom: BorderSide(
-                          color: Colors.grey,
-                          width: 1,
-                        ),
-                      ),
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10)),
+                      hintText: 'Email',
+                      errorText:
+                          signupCtrl.mailIsValid.value ? null : "invalid mail",
+                      fillColor: Colors.grey,
+                      filled: true,
                     ),
-                  ),
-                ),
-                SizedBox(
-                  width: Get.width * .55,
-                  child: Obx(() {
-                    return TextField(
-                      controller: signupCtrl.numController,
-                      onChanged: (val) {
-                        if (val.length == 10) {
-                          signupCtrl.numIsValid.value = true;
-                        }
-                      },
-                      keyboardType: TextInputType.number,
-                      decoration: InputDecoration(
-                          hintText: "Phone number",
-                          errorText: signupCtrl.numIsValid.value
-                              ? null
-                              : "invalid number"),
-                    );
-                  }),
-                ),
-
-                // const
-              ],
-            ),
-            SizedBox(height: Get.height * .10),
+                  );
+                })),
+            const SizedBox(height: 20),
+            SizedBox(
+                width: Get.width * .8,
+                child: Obx(() {
+                  return TextFormField(
+                    controller: signupCtrl.passwordController,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10)),
+                      hintText: 'Password',
+                      errorText: signupCtrl.passIsValid.value
+                          ? null
+                          : "Password is Not Match",
+                      fillColor: Colors.grey,
+                      filled: true,
+                    ),
+                  );
+                })),
+            const SizedBox(height: 20),
+            SizedBox(
+                width: Get.width * .8,
+                child: Obx(() {
+                  return TextFormField(
+                    controller: signupCtrl.rePasswordController,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10)),
+                      hintText: 'Re-Password',
+                      errorText: signupCtrl.passIsValid.value
+                          ? null
+                          : "Password is Not Match",
+                      fillColor: Colors.grey,
+                      filled: true,
+                    ),
+                  );
+                })),
+            const SizedBox(height: 20),
             SizedBox(
                 width: Get.width * .8,
                 height: 48,
-                child: ElevatedButton(
+                child: ElevatedButton.icon(
                   style: ElevatedButton.styleFrom(
                       backgroundColor: UColors.primary,
                       foregroundColor: Colors.white),
-                  onPressed: () {
-                    signupCtrl.toSubmit(context);
-                  },
-                  child: const Text("Continue"),
+                  onPressed: () => signupCtrl.formValidation(),
+                  icon: const Icon(Icons.phone_android),
+                  label: const Text("SignUp"),
                 )),
+            TextButton(
+              onPressed: () {
+                Get.to(const LoginScreen());
+                signupCtrl.rePasswordController.clear();
+                signupCtrl.passwordController.clear();
+                signupCtrl.mailController.clear();
+                signupCtrl.nameController.clear();
+              },
+              child: const Text(
+                "Login!",
+                style: TextStyle(
+                    color: Colors.black, decoration: TextDecoration.underline),
+              ),
+            ),
           ],
         ),
       ),
