@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:unite/features/chat/controllers/user_controllers.dart';
-import 'package:unite/features/chat/screens/conversation/conversation_screen.dart';
+import 'package:unite/features/Authentications/controllers/user_controllers.dart';
+import 'package:unite/features/chat/screens/inbox/inbox_screen.dart';
 import 'package:unite/utils/constants/colors.dart';
 
 class ChatScreen extends StatelessWidget {
@@ -48,15 +48,17 @@ class ChatScreen extends StatelessWidget {
                     return ListView.separated(
                       itemCount: snapshot.data!.docs.length,
                       itemBuilder: (context, index) => InkWell(
-                        onTap: () => Get.to(ConversationScreen(
+                        onTap: () => Get.to(InboxScreen(
                           user: snapshot.data!.docs[index],
                         )),
                         child: ListTile(
                           leading: Stack(
                             children: [
-                              CircleAvatar(
-                                backgroundImage: NetworkImage(
-                                    snapshot.data?.docs[index]['image']),
+                              const CircleAvatar(
+                                backgroundImage:
+                                    AssetImage('assets/images/image.png'
+                                        // snapshot.data?.docs[index]['image'],
+                                        ),
                               ),
                               Positioned(
                                   bottom: 2,

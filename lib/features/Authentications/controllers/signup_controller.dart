@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:unite/features/chat/models/user_model.dart';
+import 'package:unite/features/Authentications/models/user_model.dart';
 import 'package:unite/navigation_menu.dart';
 import 'package:unite/utils/helper/firebase_helper.dart';
 import 'package:unite/utils/helper/helper_funtions.dart';
@@ -45,12 +45,11 @@ class SignupController extends GetxController {
     }
   }
 
-  signUpWithEmailAndPass(
-      {required String name,
-      required String mail,
-      required String password}) async {
+  signUpWithEmailAndPass({required String name,
+    required String mail,
+    required String password}) async {
     try {
-      await FirebaseHelpers.fireAuth
+      await FireHelpers.fireAuth
           .createUserWithEmailAndPassword(
         email: mail,
         password: password,
@@ -58,16 +57,16 @@ class SignupController extends GetxController {
           .then((value) async {
         print("Ahmad ::::::::");
         UserModel userModel = UserModel(
-            uid: FirebaseHelpers.fireAuth.currentUser!.uid,
+            uid: FireHelpers.fireAuth.currentUser!.uid,
             email: mail,
             name: name,
             image: 'none',
             lastActive: DateTime.now(),
             isOnline: true,
             password: password);
-        await FirebaseHelpers.fireStore
+        await FireHelpers.fireStore
             .collection("Users")
-            .doc(FirebaseHelpers.fireAuth.currentUser!.uid)
+            .doc(FireHelpers.fireAuth.currentUser!.uid)
             .set(userModel.toFireStore())
             .then((value) {
           clearTextController();

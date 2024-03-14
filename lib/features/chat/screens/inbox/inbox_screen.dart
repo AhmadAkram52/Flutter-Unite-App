@@ -3,19 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_chat_bubble/chat_bubble.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:unite/features/chat/controllers/conversation_controller.dart';
-import 'package:unite/features/chat/screens/conversation/widgets/bottom_input_field.dart';
+import 'package:unite/features/chat/controllers/inbox_controller.dart';
+import 'package:unite/features/chat/screens/inbox/widgets/bottom_input_field.dart';
 import 'package:unite/utils/constants/enums.dart';
 
-class ConversationScreen extends StatelessWidget {
+class InboxScreen extends StatelessWidget {
   final QueryDocumentSnapshot user;
 
-  const ConversationScreen({super.key, required this.user});
+  const InboxScreen({super.key, required this.user});
 
   @override
   Widget build(BuildContext context) {
-    final ConversationController chatController =
-        Get.put(ConversationController());
+    final InboxController chatController = Get.put(InboxController());
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -28,10 +27,10 @@ class ConversationScreen extends StatelessWidget {
         title: ListTile(
           leading: Stack(
             children: [
-              CircleAvatar(
-                backgroundImage: NetworkImage(
-                  user['image'].toString(),
-                ),
+              const CircleAvatar(
+                backgroundImage: AssetImage('assets/images/image.png'
+                    // user['image'].toString(),
+                    ),
               ),
               Positioned(
                   bottom: 2,
@@ -52,7 +51,11 @@ class ConversationScreen extends StatelessWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.more_vert_rounded),
-            onPressed: () {},
+            onPressed: () async {
+              chatController.addTextMessage(
+                  messageText: 'ad', receiverId: user['uid']);
+              // chatController.fetchUserName(id: user['uid']);
+            },
           ),
           const SizedBox(width: 10)
         ],
@@ -97,7 +100,9 @@ class ConversationScreen extends StatelessWidget {
                 ),
               ),
             ),
-            const BottomInputField(),
+            BottomInputField(
+              user: user,
+            ),
           ],
         ),
       ),

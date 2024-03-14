@@ -17,7 +17,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     Timer(const Duration(seconds: 2), () {
-      var currentUser = FirebaseHelpers.fireAuth.currentUser;
+      var currentUser = FireHelpers.fireAuth.currentUser;
       if (currentUser != null) {
         Get.offAll(const NavigationMenu());
       } else {

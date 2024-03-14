@@ -89,7 +89,7 @@ class ProfileScreen extends StatelessWidget {
       body: Center(
           child: TextButton(
         onPressed: () {
-          FirebaseHelpers.fireAuth.signOut().then((value) => {
+          FireHelpers.fireAuth.signOut().then((value) => {
                 Get.offAll(const LoginScreen()),
               });
         },

@@ -27,7 +27,7 @@ class LoginController extends GetxController {
   loginWithEmailAndPassword(
       {required String email, required String password}) async {
     try {
-      await FirebaseHelpers.fireAuth
+      await FireHelpers.fireAuth
           .signInWithEmailAndPassword(email: email, password: password)
           .then((value) {
         clearTextController();

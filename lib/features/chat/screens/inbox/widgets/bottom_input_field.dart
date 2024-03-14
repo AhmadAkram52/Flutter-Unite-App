@@ -1,16 +1,18 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:unite/features/chat/controllers/conversation_controller.dart';
+import 'package:unite/features/chat/controllers/inbox_controller.dart';
 import 'package:unite/utils/constants/colors.dart';
 
 class BottomInputField extends StatelessWidget {
-  const BottomInputField({super.key});
+  final QueryDocumentSnapshot user;
+
+  const BottomInputField({super.key, required this.user});
 
   @override
   Widget build(BuildContext context) {
-    final ConversationController chatController =
-        Get.put(ConversationController());
+    final InboxController chatController = Get.put(InboxController());
     return SafeArea(
       bottom: true,
       child: Container(
@@ -60,20 +62,19 @@ class BottomInputField extends StatelessWidget {
                 right: 0,
                 child: Obx(() {
                   return IconButton(
-                    disabledColor: UColors.disable,
-                    style: IconButton.styleFrom(
-                        // backgroundColor: UColors.primary,
-                        // disabledBackgroundColor: Color(0xFF666666),
-                        ),
-                    color: UColors.primary,
-                    icon: const Icon(
-                      Iconsax.send_21,
-                      size: 32,
-                    ),
-                    onPressed: chatController.messageText.value == ""
-                        ? null
-                        : () => chatController.onSentMessage(),
-                  );
+                      disabledColor: UColors.disable,
+                      color: UColors.primary,
+                      icon: const Icon(
+                        Iconsax.send_21,
+                        size: 32,
+                      ),
+                      onPressed: chatController.messageText.value == ""
+                          ? null
+                          : () {
+                              chatController.inputController.clear();
+                              // chatController.onSentMessage(
+                              //     receiverId: user['uid']);
+                            });
                 }),
               ),
             ],
