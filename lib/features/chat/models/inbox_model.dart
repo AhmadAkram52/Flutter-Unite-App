@@ -1,32 +1,43 @@
 class InboxModel {
-  final String user1Name;
-  final String user1Id;
-  final String user2name;
-  final String user2Id;
+  final String senderName;
+  final String senderId;
+  final String receiverName;
+  final String receiverId;
   final String lastMessage;
+  final String inboxId;
+  final int messageCounter;
 
-  InboxModel(
-      {required this.user1Name,
-      required this.user1Id,
-      required this.user2name,
-      required this.user2Id,
-      required this.lastMessage});
+  InboxModel({
+    required this.inboxId,
+    required this.senderName,
+    required this.senderId,
+    required this.receiverName,
+    required this.receiverId,
+    required this.lastMessage,
+    required this.messageCounter,
+  });
 
   factory InboxModel.formJson(Map<String, dynamic> json) {
     return InboxModel(
-        user1Name: json['user1Name'],
-        user1Id: json['user1Id'],
-        user2name: json['user2name'],
-        user2Id: json['user2Id'],
-        lastMessage: json['lastMessage']);
+      senderName: json['user1Name'],
+      senderId: json['user1Id'],
+      receiverName: json['user2name'],
+      receiverId: json['user2Id'],
+      lastMessage: json['lastMessage'],
+      inboxId: json['inboxId'],
+      messageCounter: json['messageCounter'],
+    );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'user1Name': user1Name,
-      'user1Id': user1Id,
-      'user2name': user2name,
-      'user2Id': user2Id,
+      'senderName': senderName,
+      'senderId': senderId,
+      'receiverName': receiverName,
+      'receiverId': receiverId,
+      'lastMessage': lastMessage,
+      'inboxId': inboxId,
+      'messageCounter': messageCounter,
     };
   }
 }

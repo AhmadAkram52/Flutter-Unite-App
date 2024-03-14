@@ -1,16 +1,18 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_bubble/chat_bubble.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:unite/features/chat/controllers/inbox_controller.dart';
+import 'package:unite/features/chat/models/message_model.dart';
 import 'package:unite/features/chat/screens/inbox/widgets/bottom_input_field.dart';
+import 'package:unite/navigation_menu.dart';
 import 'package:unite/utils/constants/enums.dart';
+import 'package:unite/utils/helper/firebase_helper.dart';
 
 class InboxScreen extends StatelessWidget {
-  final QueryDocumentSnapshot user;
+  final String inboxId;
 
-  const InboxScreen({super.key, required this.user});
+  const InboxScreen({super.key, required this.inboxId});
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +22,10 @@ class InboxScreen extends StatelessWidget {
         automaticallyImplyLeading: false,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios),
-          onPressed: () => Get.back(),
+          onPressed: () {
+            NavigatorController.to.selectIndex.value = 1;
+            Get.offAll(const NavigationMenu());
+          },
         ),
         // centerTitle: false,
         titleSpacing: -25,
@@ -36,24 +41,42 @@ class InboxScreen extends StatelessWidget {
                   bottom: 2,
                   right: 2,
                   child: Container(
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       shape: BoxShape.circle,
-                      color: user['isOnline'] ? Colors.green : Colors.grey,
+                      color: /*user['isOnline']*/
+                          true ? Colors.green : Colors.grey,
                     ),
                     height: 10,
                     width: 10,
                   ))
             ],
           ),
-          title: Text(user['name']),
+          title: FutureBuilder(
+            future: FireHelpers.chatsRef.doc(inboxId).get(),
+            builder: (_, s) {
+              if (s.data?.get('senderId') == FireHelpers.currentUserId) {
+                return Text(s.data?.get('receiverName'));
+              } else {
+                return Text(s.data?.get('senderName'));
+              }
+            },
+          ),
           subtitle: const Text("Last Active: "),
         ),
         actions: [
           IconButton(
             icon: const Icon(Icons.more_vert_rounded),
             onPressed: () async {
-              chatController.addTextMessage(
-                  messageText: 'ad', receiverId: user['uid']);
+              final message = MessageModel(
+                  senderId: FireHelpers.currentUserId.toString(),
+                  receiverId: "receiverId",
+                  messageTime: DateTime.now(),
+                  messageText: "Ahmad Akram");
+              FireHelpers.chatsRef
+                  .doc(inboxId)
+                  .collection('messages')
+                  .add(message.toFireStore());
+              // chatController.addTextMessage(messageText: 'ad', receiverId: '');
               // chatController.fetchUserName(id: user['uid']);
             },
           ),
@@ -100,9 +123,9 @@ class InboxScreen extends StatelessWidget {
                 ),
               ),
             ),
-            BottomInputField(
-              user: user,
-            ),
+            const BottomInputField(
+                // user: user,
+                ),
           ],
         ),
       ),

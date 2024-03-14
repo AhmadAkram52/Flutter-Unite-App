@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
@@ -6,9 +5,9 @@ import 'package:unite/features/chat/controllers/inbox_controller.dart';
 import 'package:unite/utils/constants/colors.dart';
 
 class BottomInputField extends StatelessWidget {
-  final QueryDocumentSnapshot user;
+  // final QueryDocumentSnapshot user;
 
-  const BottomInputField({super.key, required this.user});
+  const BottomInputField({super.key});
 
   @override
   Widget build(BuildContext context) {

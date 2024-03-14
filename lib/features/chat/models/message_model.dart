@@ -1,16 +1,16 @@
-class Message {
+class MessageModel {
   final String senderId;
   final String receiverId;
   final DateTime messageTime;
   final String messageText;
 
-  Message(
+  MessageModel(
       {required this.senderId,
       required this.receiverId,
       required this.messageTime,
       required this.messageText});
 
-  factory Message.fromFireStore(Map<String, dynamic> json) => Message(
+  factory MessageModel.fromFireStore(Map<String, dynamic> json) => MessageModel(
         senderId: json['senderId'],
         receiverId: json['receiverId'],
         messageTime: json['messageTime'],

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:unite/utils/helper/firebase_helper.dart';
 
 class InboxController extends GetxController {
   /* Variables */
@@ -32,24 +31,9 @@ class InboxController extends GetxController {
     required String messageText,
     required String receiverId,
   }) async {
-    final chatUsers = <String, dynamic>{
-      "user1Name":
-          await fetchUserName(id: FireHelpers.fireAuth.currentUser!.uid),
-      "user1Id": FireHelpers.fireAuth.currentUser!.uid,
-      "user2Name": await fetchUserName(id: receiverId),
-      "user2Id": receiverId,
-      "lastMessage": messageText,
-      "lastMessage": messageText,
-    };
     // print('Ahmad =>>>  $chatUsers');
-    FireHelpers.chatsRef.doc('id').set(
-          chatUsers,
-        );
-  }
-
-  Future<String> fetchUserName({required String id}) async {
-    final user1 = await FireHelpers.fireStore.collection('Users').doc(id).get();
-    String name = user1.get('name');
-    return name;
+    // FireHelpers.chatsRef.doc('id').set(
+    //   chatUsers,
+    // );
   }
 }

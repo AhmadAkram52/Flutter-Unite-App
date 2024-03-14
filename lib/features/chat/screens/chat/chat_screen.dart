@@ -2,8 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:unite/features/Authentications/controllers/user_controllers.dart';
+import 'package:unite/features/chat/controllers/chat_controller.dart';
+import 'package:unite/features/chat/screens/chat/add_chat_screen.dart';
 import 'package:unite/features/chat/screens/inbox/inbox_screen.dart';
 import 'package:unite/utils/constants/colors.dart';
+import 'package:unite/utils/helper/firebase_helper.dart';
 
 class ChatScreen extends StatelessWidget {
   const ChatScreen({super.key});
@@ -11,10 +14,17 @@ class ChatScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final UserController userCtrl = Get.put(UserController());
+    final ChatController chatCtrl = Get.put(ChatController());
 
     return DefaultTabController(
       length: 2,
       child: Scaffold(
+          floatingActionButton: FloatingActionButton(
+            onPressed: () {
+              Get.to(const AddChatScreen());
+            },
+            child: const Icon(Icons.add),
+          ),
           appBar: AppBar(
             title: const Text("Chats"),
             centerTitle: true,
@@ -34,7 +44,14 @@ class ChatScreen extends StatelessWidget {
           body: TabBarView(
             children: [
               StreamBuilder<QuerySnapshot>(
-                stream: userCtrl.users,
+                stream: FireHelpers.fireStore
+                    .collection("Chats")
+                    .where(Filter.or(
+                        Filter('senderId',
+                            isEqualTo: FireHelpers.currentUserId),
+                        Filter('receiverId',
+                            isEqualTo: FireHelpers.currentUserId)))
+                    .snapshots(),
                 builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(
@@ -48,9 +65,10 @@ class ChatScreen extends StatelessWidget {
                     return ListView.separated(
                       itemCount: snapshot.data!.docs.length,
                       itemBuilder: (context, index) => InkWell(
-                        onTap: () => Get.to(InboxScreen(
-                          user: snapshot.data!.docs[index],
-                        )),
+                        onTap: () {
+                          Get.to(InboxScreen(
+                              inboxId: snapshot.data!.docs[index]['inboxId']));
+                        },
                         child: ListTile(
                           leading: Stack(
                             children: [
@@ -64,19 +82,19 @@ class ChatScreen extends StatelessWidget {
                                   bottom: 2,
                                   right: 2,
                                   child: Container(
-                                    decoration: BoxDecoration(
+                                    decoration: const BoxDecoration(
                                       shape: BoxShape.circle,
-                                      color: snapshot.data?.docs[index]
-                                              ['isOnline']
-                                          ? Colors.green
-                                          : Colors.grey,
+                                      color: true ? Colors.green : Colors.grey,
                                     ),
                                     height: 10,
                                     width: 10,
                                   ))
                             ],
                           ),
-                          title: Text(snapshot.data?.docs[index]['name']),
+                          title: snapshot.data?.docs[index]['senderId'] ==
+                                  FireHelpers.currentUserId
+                              ? Text(snapshot.data?.docs[index]['receiverName'])
+                              : Text(snapshot.data?.docs[index]['senderName']),
                           subtitle: const Text("UserName: Last Message"),
                           trailing: Column(
                             mainAxisAlignment: MainAxisAlignment.center,

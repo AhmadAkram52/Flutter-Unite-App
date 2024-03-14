@@ -39,6 +39,7 @@ class NavigationMenu extends StatelessWidget {
 }
 
 class NavigatorController extends GetxController {
+  static NavigatorController get to => Get.find();
   final RxInt selectIndex = 0.obs;
   final screen = const [
     HomeScreen(),
