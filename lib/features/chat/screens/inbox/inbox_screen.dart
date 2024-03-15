@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:iconsax/iconsax.dart';
 import 'package:unite/features/chat/controllers/inbox_controller.dart';
 import 'package:unite/features/chat/screens/inbox/widgets/bottom_input_field.dart';
 import 'package:unite/features/chat/screens/inbox/widgets/message_bubble.dart';
@@ -55,9 +56,7 @@ class InboxScreen extends StatelessWidget {
             builder: (_,
                 AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>>
                     snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const CircularProgressIndicator(); // Or any loading indicator
-              } else if (snapshot.hasError) {
+              if (snapshot.hasError) {
                 return Text('Error: ${snapshot.error}');
               } else if (snapshot.hasData && snapshot.data != null) {
                 final data = snapshot.data!.data();
@@ -88,6 +87,12 @@ class InboxScreen extends StatelessWidget {
               Get.bottomSheet(
                 Container(
                   height: 100,
+                  child: const Row(
+                    children: [
+                      Icon(Iconsax.gallery),
+                      Icon(Iconsax.camera),
+                    ],
+                  ),
                 ),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20),
