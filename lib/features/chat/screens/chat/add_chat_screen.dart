@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:unite/features/Authentications/controllers/user_controllers.dart';
 import 'package:unite/features/chat/controllers/chat_controller.dart';
-import 'package:unite/utils/constants/colors.dart';
 
 class AddChatScreen extends StatelessWidget {
   const AddChatScreen({super.key});
@@ -61,26 +60,6 @@ class AddChatScreen extends StatelessWidget {
                       ],
                     ),
                     title: Text(snapshot.data?.docs[index]['name']),
-                    subtitle: const Text("UserName: Last Message"),
-                    trailing: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        const Text("12:12"),
-                        Container(
-                          padding: const EdgeInsets.all(7),
-                          decoration: const BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: UColors.primary,
-                          ),
-                          child: const Text(
-                            "1",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        )
-                      ],
-                    ),
                   ),
                 ),
                 separatorBuilder: (BuildContext context, int index) =>

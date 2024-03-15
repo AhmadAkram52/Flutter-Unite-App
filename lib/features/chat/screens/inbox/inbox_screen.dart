@@ -1,10 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_chat_bubble/chat_bubble.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import 'package:unite/features/chat/controllers/inbox_controller.dart';
-import 'package:unite/features/chat/models/message_model.dart';
 import 'package:unite/features/chat/screens/inbox/widgets/bottom_input_field.dart';
+import 'package:unite/features/chat/screens/inbox/widgets/message_bubble.dart';
 import 'package:unite/navigation_menu.dart';
 import 'package:unite/utils/constants/enums.dart';
 import 'package:unite/utils/helper/firebase_helper.dart';
@@ -53,11 +52,30 @@ class InboxScreen extends StatelessWidget {
           ),
           title: FutureBuilder(
             future: FireHelpers.chatsRef.doc(inboxId).get(),
-            builder: (_, s) {
-              if (s.data?.get('senderId') == FireHelpers.currentUserId) {
-                return Text(s.data?.get('receiverName'));
+            builder: (_,
+                AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>>
+                    snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const CircularProgressIndicator(); // Or any loading indicator
+              } else if (snapshot.hasError) {
+                return Text('Error: ${snapshot.error}');
+              } else if (snapshot.hasData && snapshot.data != null) {
+                final data = snapshot.data!.data();
+                if (data != null) {
+                  final senderId = data['senderId'];
+                  final receiverName = data['receiverName'];
+                  final senderName = data['senderName'];
+
+                  if (senderId == FireHelpers.currentUserId) {
+                    return Text(receiverName);
+                  } else {
+                    return Text(senderName);
+                  }
+                } else {
+                  return Text('Data is null');
+                }
               } else {
-                return Text(s.data?.get('senderName'));
+                return Text('No data available');
               }
             },
           ),
@@ -66,19 +84,7 @@ class InboxScreen extends StatelessWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.more_vert_rounded),
-            onPressed: () async {
-              final message = MessageModel(
-                  senderId: FireHelpers.currentUserId.toString(),
-                  receiverId: "receiverId",
-                  messageTime: DateTime.now(),
-                  messageText: "Ahmad Akram");
-              FireHelpers.chatsRef
-                  .doc(inboxId)
-                  .collection('messages')
-                  .add(message.toFireStore());
-              // chatController.addTextMessage(messageText: 'ad', receiverId: '');
-              // chatController.fetchUserName(id: user['uid']);
-            },
+            onPressed: () {},
           ),
           const SizedBox(width: 10)
         ],
@@ -93,80 +99,59 @@ class InboxScreen extends StatelessWidget {
                 },
                 child: Align(
                   alignment: Alignment.topCenter,
-                  child:
-                      // Obx(() {
-                      //   // var chatList = chatController.chatList.reversed.toList();
-                      //   return
-                      ListView.separated(
-                    shrinkWrap: true,
-                    reverse: true,
-                    padding: const EdgeInsets.only(top: 12, bottom: 12) +
-                        const EdgeInsets.symmetric(horizontal: 12),
-                    separatorBuilder: (_, __) => const SizedBox(
-                      height: 2,
-                    ),
-                    controller: chatController.scrollController,
-                    itemCount: 10,
-                    itemBuilder: (context, index) {
-                      return getBubbleView(
-                        text:
-                            "Ahmad Akram, Ahmad Akram,Ahmad Akram, Ahmad Akram, Ahmad Akram, Ahmad Akram, Ahmad Akram, Ahmad Akram, Ahmad Akram,",
-                        context: context,
-                        type: index % 2 == 0
-                            ? ChatMessageType.received
-                            : ChatMessageType.sent,
-                      );
+                  child: StreamBuilder(
+                    stream: FireHelpers.chatsRef
+                        .doc(inboxId)
+                        .collection('messages')
+                        .orderBy('messageTime', descending: true)
+                        .snapshots(),
+                    builder: (BuildContext context,
+                        AsyncSnapshot<dynamic> snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      } else if (snapshot.hasData) {
+                        return ListView.separated(
+                          shrinkWrap: true,
+                          reverse: true,
+                          padding: const EdgeInsets.only(top: 12, bottom: 12) +
+                              const EdgeInsets.symmetric(horizontal: 12),
+                          separatorBuilder: (_, __) => const SizedBox(
+                            height: 5,
+                          ),
+                          controller: chatController.scrollController,
+                          itemCount: snapshot.data.docs.length,
+                          itemBuilder: (context, index) {
+                            return MessageBubbleView(
+                              text: snapshot.data.docs[index]['messageText'],
+                              context: context,
+                              type: snapshot.data.docs[index]['senderId'] ==
+                                      FireHelpers.currentUserId
+                                  ? ChatMessageType.sent
+                                  : ChatMessageType.received,
+                              messageTime: snapshot
+                                  .data.docs[index]['messageTime']
+                                  .toDate(),
+                            );
+                          },
+                        );
+                      } else if (snapshot.hasError) {
+                        return const Center(
+                          child: Text('Error'),
+                        );
+                      } else {
+                        return const Center(
+                          child: Text('no message'),
+                        );
+                      }
                     },
-                    //   );
-                    // }
                   ),
                 ),
               ),
             ),
-            const BottomInputField(
-                // user: user,
-                ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  getBubbleView({
-    required BuildContext context,
-    required String text,
-    required ChatMessageType type,
-  }) {
-    return ChatBubble(
-      padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
-      clipper: ChatBubbleClipper5(
-        // type: BubbleType.receiverBubble,
-        type: type == ChatMessageType.sent
-            ? BubbleType.sendBubble
-            : BubbleType.receiverBubble,
-      ),
-      alignment:
-          type == ChatMessageType.sent ? Alignment.topRight : Alignment.topLeft,
-      margin: const EdgeInsets.only(top: 10),
-      backGroundColor:
-          type == ChatMessageType.sent ? Colors.blue : const Color(0xffE7E7ED),
-      child: Container(
-        constraints: BoxConstraints(
-          maxWidth: Get.width * 0.7,
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            Text(
-              text,
-              style: TextStyle(
-                  color: type == ChatMessageType.sent
-                      ? Colors.white
-                      : Colors.black),
-            ),
-            Text(
-              DateFormat.Hm().format(DateTime.now()).toString(),
-              style: const TextStyle(color: Color(0xff646060)),
+            BottomInputField(
+              inboxId: inboxId,
             ),
           ],
         ),

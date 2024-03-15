@@ -95,7 +95,8 @@ class ChatScreen extends StatelessWidget {
                                   FireHelpers.currentUserId
                               ? Text(snapshot.data?.docs[index]['receiverName'])
                               : Text(snapshot.data?.docs[index]['senderName']),
-                          subtitle: const Text("UserName: Last Message"),
+                          subtitle:
+                              Text(snapshot.data?.docs[index]['lastMessage']),
                           trailing: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.end,

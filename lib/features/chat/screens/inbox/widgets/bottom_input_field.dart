@@ -5,13 +5,13 @@ import 'package:unite/features/chat/controllers/inbox_controller.dart';
 import 'package:unite/utils/constants/colors.dart';
 
 class BottomInputField extends StatelessWidget {
-  // final QueryDocumentSnapshot user;
+  final String inboxId;
 
-  const BottomInputField({super.key});
+  const BottomInputField({super.key, required this.inboxId});
 
   @override
   Widget build(BuildContext context) {
-    final InboxController chatController = Get.put(InboxController());
+    final InboxController inboxCtrl = Get.put(InboxController());
     return SafeArea(
       bottom: true,
       child: Container(
@@ -29,11 +29,11 @@ class BottomInputField extends StatelessWidget {
           child: Stack(
             children: [
               TextField(
-                focusNode: chatController.focusNode,
+                focusNode: inboxCtrl.focusNode,
                 onChanged: (text) {
-                  chatController.messageText.value = text;
+                  inboxCtrl.messageText.value = text;
                 },
-                controller: chatController.inputController,
+                controller: inboxCtrl.inputController,
                 maxLines: null,
                 textAlignVertical: TextAlignVertical.top,
                 decoration: InputDecoration(
@@ -67,13 +67,12 @@ class BottomInputField extends StatelessWidget {
                         Iconsax.send_21,
                         size: 32,
                       ),
-                      onPressed: chatController.messageText.value == ""
-                          ? null
-                          : () {
-                              chatController.inputController.clear();
-                              // chatController.onSentMessage(
-                              //     receiverId: user['uid']);
-                            });
+                      onPressed:
+                          (inboxCtrl.messageText.value.trimLeft().isEmpty)
+                              ? null
+                              : () {
+                                  inboxCtrl.onSentMessage(inboxId: inboxId);
+                                });
                 }),
               ),
             ],
