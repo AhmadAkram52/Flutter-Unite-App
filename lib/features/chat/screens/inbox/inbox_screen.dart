@@ -85,19 +85,28 @@ class InboxScreen extends StatelessWidget {
             icon: const Icon(Icons.more_vert_rounded),
             onPressed: () {
               Get.bottomSheet(
-                Container(
-                  height: 100,
-                  child: const Row(
-                    children: [
-                      Icon(Iconsax.gallery),
-                      Icon(Iconsax.camera),
-                    ],
+                  const SizedBox(
+                    height: 150,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Card(
+                          elevation: 5,
+                          color: Colors.grey,
+                          shadowColor: Colors.red,
+                          child: Icon(Iconsax.gallery, size: 50),
+                        ),
+                        Card(
+                          margin: EdgeInsets.all(10),
+                          child: Icon(Iconsax.camera, size: 50),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
-                ),
-              );
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  backgroundColor: Colors.white);
             },
           ),
           const SizedBox(width: 10)
