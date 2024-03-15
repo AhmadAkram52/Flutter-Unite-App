@@ -1,3 +1,5 @@
+import 'package:unite/utils/constants/text.dart';
+
 class InboxModel {
   final String senderName;
   final String senderId;
@@ -19,25 +21,25 @@ class InboxModel {
 
   factory InboxModel.formJson(Map<String, dynamic> json) {
     return InboxModel(
-      senderName: json['user1Name'],
-      senderId: json['user1Id'],
-      receiverName: json['user2name'],
-      receiverId: json['user2Id'],
-      lastMessage: json['lastMessage'],
-      inboxId: json['inboxId'],
-      messageCounter: json['messageCounter'],
+      senderName: json[UTexts.senderName],
+      senderId: json[UTexts.senderId],
+      receiverName: json[UTexts.receiverName],
+      receiverId: json[UTexts.receiverId],
+      lastMessage: json[UTexts.lastMessage],
+      inboxId: json[UTexts.inboxId],
+      messageCounter: json[UTexts.messageCounter],
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'senderName': senderName,
-      'senderId': senderId,
-      'receiverName': receiverName,
-      'receiverId': receiverId,
-      'lastMessage': lastMessage,
-      'inboxId': inboxId,
-      'messageCounter': messageCounter,
+      UTexts.senderName: senderName,
+      UTexts.senderId: senderId,
+      UTexts.receiverName: receiverName,
+      UTexts.receiverId: receiverId,
+      UTexts.lastMessage: lastMessage,
+      UTexts.inboxId: inboxId,
+      UTexts.messageCounter: messageCounter,
     };
   }
 }

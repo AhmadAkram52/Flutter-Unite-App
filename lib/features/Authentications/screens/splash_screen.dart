@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:unite/features/Authentications/screens/login/login_screen.dart';
 import 'package:unite/navigation_menu.dart';
+import 'package:unite/utils/constants/images_strings.dart';
 import 'package:unite/utils/helper/firebase_helper.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -37,7 +38,7 @@ class _SplashScreenState extends State<SplashScreen> {
           color: Color(0xFF007FBF),
         ),
         child: Center(
-          child: Image.asset("assets/images/Unite Logo.png"),
+          child: Image.asset(UImages.uniteLogo),
         ),
       ),
     );

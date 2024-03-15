@@ -3,6 +3,8 @@ import 'package:get/get.dart';
 import 'package:unite/features/Authentications/controllers/login_controller.dart';
 import 'package:unite/features/Authentications/screens/signup/signup_screen.dart';
 import 'package:unite/utils/constants/colors.dart';
+import 'package:unite/utils/constants/images_strings.dart';
+import 'package:unite/utils/constants/text.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -16,7 +18,7 @@ class LoginScreen extends StatelessWidget {
         width: double.infinity,
         decoration: const BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('assets/images/login_bg.png'),
+            image: AssetImage(UImages.loginBg),
             fit: BoxFit.cover,
           ),
         ),
@@ -31,9 +33,10 @@ class LoginScreen extends StatelessWidget {
                     decoration: InputDecoration(
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10)),
-                      hintText: 'Email',
-                      errorText:
-                          loginCtrl.mailIsValid.value ? null : "invalid mail",
+                      hintText: UTexts.email,
+                      errorText: loginCtrl.mailIsValid.value
+                          ? null
+                          : UTexts.invalidMail,
                       fillColor: Colors.grey,
                       filled: true,
                     ),
@@ -47,7 +50,7 @@ class LoginScreen extends StatelessWidget {
                   decoration: InputDecoration(
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10)),
-                    hintText: 'Password',
+                    hintText: UTexts.password,
                     fillColor: Colors.grey,
                     filled: true,
                   ),
@@ -62,20 +65,23 @@ class LoginScreen extends StatelessWidget {
                       foregroundColor: Colors.white),
                   onPressed: () => loginCtrl.formValidation(),
                   icon: const Icon(Icons.phone_android),
-                  label: const Text("LogIn"),
+                  label: const Text(UTexts.logIn),
                 )),
-            TextButton(
-              onPressed: () {
-                Get.to(const SignupScreen());
-                loginCtrl.passwordController.clear();
-                loginCtrl.mailController.clear();
-              },
-              child: const Text(
-                "SignUp!",
-                style: TextStyle(
-                    color: Colors.black, decoration: TextDecoration.underline),
-              ),
-            ),
+            SizedBox(
+                width: Get.width * .8,
+                height: 48,
+                child: ElevatedButton.icon(
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: UColors.primary,
+                      foregroundColor: Colors.white),
+                  onPressed: () {
+                    Get.to(const SignupScreen());
+                    loginCtrl.passwordController.clear();
+                    loginCtrl.mailController.clear();
+                  },
+                  icon: const Icon(Icons.phone_android),
+                  label: const Text(UTexts.signUp),
+                )),
           ],
         ),
       ),

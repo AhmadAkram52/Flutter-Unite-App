@@ -6,6 +6,8 @@ import 'package:unite/features/chat/screens/inbox/widgets/bottom_input_field.dar
 import 'package:unite/features/chat/screens/inbox/widgets/message_bubble.dart';
 import 'package:unite/navigation_menu.dart';
 import 'package:unite/utils/constants/enums.dart';
+import 'package:unite/utils/constants/images_strings.dart';
+import 'package:unite/utils/constants/text.dart';
 import 'package:unite/utils/helper/firebase_helper.dart';
 
 class InboxScreen extends StatelessWidget {
@@ -32,9 +34,7 @@ class InboxScreen extends StatelessWidget {
           leading: Stack(
             children: [
               const CircleAvatar(
-                backgroundImage: AssetImage('assets/images/image.png'
-                    // user['image'].toString(),
-                    ),
+                backgroundImage: AssetImage(UImages.user1),
               ),
               Positioned(
                   bottom: 2,
@@ -62,9 +62,9 @@ class InboxScreen extends StatelessWidget {
               } else if (snapshot.hasData && snapshot.data != null) {
                 final data = snapshot.data!.data();
                 if (data != null) {
-                  final senderId = data['senderId'];
-                  final receiverName = data['receiverName'];
-                  final senderName = data['senderName'];
+                  final senderId = data[UTexts.senderId];
+                  final receiverName = data[UTexts.receiverName];
+                  final senderName = data[UTexts.senderName];
 
                   if (senderId == FireHelpers.currentUserId) {
                     return Text(receiverName);
@@ -72,10 +72,10 @@ class InboxScreen extends StatelessWidget {
                     return Text(senderName);
                   }
                 } else {
-                  return Text('Data is null');
+                  return const Text('Data is null');
                 }
               } else {
-                return Text('No data available');
+                return const Text('No data available');
               }
             },
           ),
@@ -84,7 +84,16 @@ class InboxScreen extends StatelessWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.more_vert_rounded),
-            onPressed: () {},
+            onPressed: () {
+              Get.bottomSheet(
+                Container(
+                  height: 100,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+              );
+            },
           ),
           const SizedBox(width: 10)
         ],
@@ -102,8 +111,8 @@ class InboxScreen extends StatelessWidget {
                   child: StreamBuilder(
                     stream: FireHelpers.chatsRef
                         .doc(inboxId)
-                        .collection('messages')
-                        .orderBy('messageTime', descending: true)
+                        .collection(UTexts.messages)
+                        .orderBy(UTexts.messageTime, descending: true)
                         .snapshots(),
                     builder: (BuildContext context,
                         AsyncSnapshot<dynamic> snapshot) {
@@ -113,36 +122,38 @@ class InboxScreen extends StatelessWidget {
                         );
                       } else if (snapshot.hasData) {
                         return ListView.separated(
-                          shrinkWrap: true,
-                          reverse: true,
-                          padding: const EdgeInsets.only(top: 12, bottom: 12) +
-                              const EdgeInsets.symmetric(horizontal: 12),
-                          separatorBuilder: (_, __) => const SizedBox(
-                            height: 5,
-                          ),
-                          controller: chatController.scrollController,
-                          itemCount: snapshot.data.docs.length,
-                          itemBuilder: (context, index) {
-                            return MessageBubbleView(
-                              text: snapshot.data.docs[index]['messageText'],
-                              context: context,
-                              type: snapshot.data.docs[index]['senderId'] ==
-                                      FireHelpers.currentUserId
-                                  ? ChatMessageType.sent
-                                  : ChatMessageType.received,
-                              messageTime: snapshot
-                                  .data.docs[index]['messageTime']
-                                  .toDate(),
-                            );
-                          },
-                        );
+                            shrinkWrap: true,
+                            reverse: true,
+                            padding:
+                                const EdgeInsets.only(top: 12, bottom: 12) +
+                                    const EdgeInsets.symmetric(horizontal: 12),
+                            separatorBuilder: (_, __) => const SizedBox(
+                                  height: 5,
+                                ),
+                            controller: chatController.scrollController,
+                            itemCount: snapshot.data.docs.length,
+                            itemBuilder: (context, index) {
+                              return MessageBubbleView(
+                                text: snapshot.data.docs[index]
+                                    [UTexts.messageText],
+                                context: context,
+                                type: snapshot.data.docs[index]
+                                            [UTexts.senderId] ==
+                                        FireHelpers.currentUserId
+                                    ? ChatMessageType.sent
+                                    : ChatMessageType.received,
+                                messageTime: snapshot
+                                    .data.docs[index][UTexts.messageTime]
+                                    .toDate(),
+                              );
+                            });
                       } else if (snapshot.hasError) {
                         return const Center(
-                          child: Text('Error'),
+                          child: Text(UTexts.error),
                         );
                       } else {
                         return const Center(
-                          child: Text('no message'),
+                          child: Text(UTexts.noMessage),
                         );
                       }
                     },

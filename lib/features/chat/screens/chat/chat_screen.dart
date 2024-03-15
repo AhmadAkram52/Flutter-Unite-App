@@ -6,6 +6,8 @@ import 'package:unite/features/chat/controllers/chat_controller.dart';
 import 'package:unite/features/chat/screens/chat/add_chat_screen.dart';
 import 'package:unite/features/chat/screens/inbox/inbox_screen.dart';
 import 'package:unite/utils/constants/colors.dart';
+import 'package:unite/utils/constants/images_strings.dart';
+import 'package:unite/utils/constants/text.dart';
 import 'package:unite/utils/helper/firebase_helper.dart';
 
 class ChatScreen extends StatelessWidget {
@@ -26,17 +28,17 @@ class ChatScreen extends StatelessWidget {
             child: const Icon(Icons.add),
           ),
           appBar: AppBar(
-            title: const Text("Chats"),
+            title: const Text(UTexts.chats),
             centerTitle: true,
             bottom: const TabBar(
               labelColor: UColors.primary,
               indicatorColor: UColors.primary,
               tabs: [
                 Tab(
-                  text: "Quests",
+                  text: UTexts.quests,
                 ),
                 Tab(
-                  text: "Personal",
+                  text: UTexts.personal,
                 ),
               ],
             ),
@@ -44,12 +46,11 @@ class ChatScreen extends StatelessWidget {
           body: TabBarView(
             children: [
               StreamBuilder<QuerySnapshot>(
-                stream: FireHelpers.fireStore
-                    .collection("Chats")
+                stream: FireHelpers.chatsRef
                     .where(Filter.or(
-                        Filter('senderId',
+                        Filter(UTexts.senderId,
                             isEqualTo: FireHelpers.currentUserId),
-                        Filter('receiverId',
+                        Filter(UTexts.receiverId,
                             isEqualTo: FireHelpers.currentUserId)))
                     .snapshots(),
                 builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -59,7 +60,7 @@ class ChatScreen extends StatelessWidget {
                     );
                   } else if (snapshot.hasError) {
                     return const Center(
-                      child: Text("Error"),
+                      child: Text(UTexts.error),
                     );
                   } else if (snapshot.hasData) {
                     return ListView.separated(
@@ -67,16 +68,14 @@ class ChatScreen extends StatelessWidget {
                       itemBuilder: (context, index) => InkWell(
                         onTap: () {
                           Get.to(InboxScreen(
-                              inboxId: snapshot.data!.docs[index]['inboxId']));
+                              inboxId: snapshot.data!.docs[index]
+                                  [UTexts.inboxId]));
                         },
                         child: ListTile(
                           leading: Stack(
                             children: [
                               const CircleAvatar(
-                                backgroundImage:
-                                    AssetImage('assets/images/image.png'
-                                        // snapshot.data?.docs[index]['image'],
-                                        ),
+                                backgroundImage: AssetImage(UImages.user1),
                               ),
                               Positioned(
                                   bottom: 2,
@@ -91,12 +90,14 @@ class ChatScreen extends StatelessWidget {
                                   ))
                             ],
                           ),
-                          title: snapshot.data?.docs[index]['senderId'] ==
+                          title: snapshot.data?.docs[index][UTexts.senderId] ==
                                   FireHelpers.currentUserId
-                              ? Text(snapshot.data?.docs[index]['receiverName'])
-                              : Text(snapshot.data?.docs[index]['senderName']),
-                          subtitle:
-                              Text(snapshot.data?.docs[index]['lastMessage']),
+                              ? Text(snapshot.data?.docs[index]
+                                  [UTexts.receiverName])
+                              : Text(snapshot.data?.docs[index]
+                                  [UTexts.senderName]),
+                          subtitle: Text(
+                              snapshot.data?.docs[index][UTexts.lastMessage]),
                           trailing: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.end,
@@ -125,7 +126,7 @@ class ChatScreen extends StatelessWidget {
                       ),
                     );
                   } else {
-                    return const Text("Ahmad");
+                    return const Text(UTexts.error);
                   }
                 },
               ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
+import 'package:unite/utils/constants/text.dart';
 
 class CodeVerifyScreen extends StatelessWidget {
   final String verificationId;
@@ -56,7 +57,7 @@ class CodeVerifyScreen extends StatelessWidget {
                   animationType: AnimationType.fade,
                   validator: (v) {
                     if (v!.length < 6) {
-                      return "Invalid Code";
+                      return UTexts.invalidCode;
                     } else {
                       return null;
                     }
@@ -83,7 +84,6 @@ class CodeVerifyScreen extends StatelessWidget {
                   keyboardType: TextInputType.number,
                   onCompleted: (v) async {
                     if (v.length == 6) {
-                      print("Ahmad :::: $v");
                       // await signupCtrl.verifyCode(smsCode:v, );
                     }
                   },

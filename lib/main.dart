@@ -2,7 +2,6 @@ import 'package:country_code_picker/country_code_picker.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get/get.dart';
 import 'package:unite/features/Authentications/screens/login/login_screen.dart';
 import 'package:unite/features/Authentications/screens/splash_screen.dart';
@@ -39,8 +38,6 @@ class UniteApp extends StatelessWidget {
       supportedLocales: ULists.listOfLocale,
       localizationsDelegates: const [
         CountryLocalizations.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
       ],
       home: const SplashScreen(),
     );

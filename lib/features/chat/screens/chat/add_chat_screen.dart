@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:unite/features/Authentications/controllers/user_controllers.dart';
 import 'package:unite/features/chat/controllers/chat_controller.dart';
+import 'package:unite/utils/constants/images_strings.dart';
+import 'package:unite/utils/constants/text.dart';
 
 class AddChatScreen extends StatelessWidget {
   const AddChatScreen({super.key});
@@ -15,7 +17,7 @@ class AddChatScreen extends StatelessWidget {
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text("Add New Chats"),
+          title: const Text(UTexts.addNewChat),
           centerTitle: true,
         ),
         body: StreamBuilder<QuerySnapshot>(
@@ -27,7 +29,7 @@ class AddChatScreen extends StatelessWidget {
               );
             } else if (snapshot.hasError) {
               return const Center(
-                child: Text("Error"),
+                child: Text(UTexts.error),
               );
             } else if (snapshot.hasData) {
               return ListView.separated(
@@ -40,7 +42,7 @@ class AddChatScreen extends StatelessWidget {
                     leading: Stack(
                       children: [
                         const CircleAvatar(
-                          backgroundImage: AssetImage('assets/images/image.png'
+                          backgroundImage: AssetImage(UImages.user1
                               // snapshot.data?.docs[index]['image'],
                               ),
                         ),
@@ -50,7 +52,8 @@ class AddChatScreen extends StatelessWidget {
                             child: Container(
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
-                                color: snapshot.data?.docs[index]['isOnline']
+                                color: snapshot.data?.docs[index]
+                                        [UTexts.isOnline]
                                     ? Colors.green
                                     : Colors.grey,
                               ),
@@ -59,7 +62,7 @@ class AddChatScreen extends StatelessWidget {
                             ))
                       ],
                     ),
-                    title: Text(snapshot.data?.docs[index]['name']),
+                    title: Text(snapshot.data?.docs[index][UTexts.name]),
                   ),
                 ),
                 separatorBuilder: (BuildContext context, int index) =>
@@ -69,7 +72,7 @@ class AddChatScreen extends StatelessWidget {
                 ),
               );
             } else {
-              return const Text("Ahmad");
+              return const Text(UTexts.ahmad);
             }
           },
         ),

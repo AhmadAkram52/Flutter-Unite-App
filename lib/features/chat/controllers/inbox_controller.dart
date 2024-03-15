@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:unite/features/chat/models/message_model.dart';
+import 'package:unite/utils/constants/text.dart';
 import 'package:unite/utils/helper/firebase_helper.dart';
 
 class InboxController extends GetxController {
@@ -35,10 +36,10 @@ class InboxController extends GetxController {
   }) async {
     final String receiverId =
         await FireHelpers.chatsRef.doc(inboxId).get().then((value) {
-      if (value.get('senderId') == FireHelpers.currentUserId) {
-        return value.get('receiverId');
+      if (value.get(UTexts.senderId) == FireHelpers.currentUserId) {
+        return value.get(UTexts.receiverId);
       } else {
-        return value.get('senderId');
+        return value.get(UTexts.senderId);
       }
     });
     final message = MessageModel(
@@ -48,10 +49,10 @@ class InboxController extends GetxController {
         messageText: messageText.trimLeft());
     FireHelpers.chatsRef
         .doc(inboxId)
-        .collection('messages')
+        .collection(UTexts.messages)
         .add(message.toFireStore());
     FireHelpers.chatsRef
         .doc(inboxId)
-        .update({'lastMessage': messageText.trimLeft()});
+        .update({UTexts.lastMessage: messageText.trimLeft()});
   }
 }

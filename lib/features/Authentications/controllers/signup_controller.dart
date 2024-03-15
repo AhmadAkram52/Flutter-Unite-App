@@ -45,9 +45,10 @@ class SignupController extends GetxController {
     }
   }
 
-  signUpWithEmailAndPass({required String name,
-    required String mail,
-    required String password}) async {
+  signUpWithEmailAndPass(
+      {required String name,
+      required String mail,
+      required String password}) async {
     try {
       await FireHelpers.fireAuth
           .createUserWithEmailAndPassword(
@@ -55,7 +56,6 @@ class SignupController extends GetxController {
         password: password,
       )
           .then((value) async {
-        print("Ahmad ::::::::");
         UserModel userModel = UserModel(
             uid: FireHelpers.fireAuth.currentUser!.uid,
             email: mail,
@@ -64,8 +64,7 @@ class SignupController extends GetxController {
             lastActive: DateTime.now(),
             isOnline: true,
             password: password);
-        await FireHelpers.fireStore
-            .collection("Users")
+        await FireHelpers.usersRef
             .doc(FireHelpers.fireAuth.currentUser!.uid)
             .set(userModel.toFireStore())
             .then((value) {
@@ -81,7 +80,7 @@ class SignupController extends GetxController {
             "Change Email", 'The account already exists for that email.');
       }
     } catch (e) {
-      print('Ahmad :::$e');
+      Get.snackbar(e.toString(), "");
     }
   }
 
@@ -92,66 +91,3 @@ class SignupController extends GetxController {
     nameController.clear();
   }
 }
-
-// toSubmit(BuildContext context) {
-//   if (numController.text.length != 10) {
-//     numIsValid.value = false;
-//   } else {
-//     phoneNumber.value = numController.text.toString();
-//     final String fullNumber = "${dailCode.value}${phoneNumber.value}";
-//     Get.defaultDialog(
-//       actions: [
-//         TextButton(
-//           onPressed: () {
-//             Navigator.pop(context);
-//           },
-//           child: const Text("Edit"),
-//         ),
-//         TextButton(
-//           onPressed: () {
-//             isLoading.value = true;
-//             Navigator.pop(context);
-//             // Get.to(CodeVerifyScreen(verificationId: "verificationId"));
-//             sentCodeUsingNumber(phoneNumber: fullNumber);
-//           },
-//           child: const Text("Yes"),
-//         ),
-//       ],
-//       title: "Number Confirmation",
-//       middleText: "$fullNumber \n Is your phone number above correct?",
-//     );
-//   }
-// }
-
-// sentCodeUsingNumber({required String phoneNumber}) {
-//   FirebaseHelpers.fireAuth.verifyPhoneNumber(
-//       phoneNumber: phoneNumber,
-//       timeout: const Duration(seconds: 10),
-//       verificationCompleted: (_) {},
-//       verificationFailed: (e) {
-//         isLoading.value = false;
-//         Get.snackbar("Error", "$e");
-//         print("Ahmad Phone Error::::: $e");
-//       },
-//       codeSent: (String verificationId, int? token) {
-//         isLoading.value = false;
-//         Get.to(CodeVerifyScreen(verificationId: verificationId));
-//       },
-//       codeAutoRetrievalTimeout: (e) {
-//         isLoading.value = false;
-//         Get.snackbar("TimeOut", e);
-//         print(" Ahmad TimeOut::::: $e");
-//       });
-// }
-
-// verifyCode({verificationId, smsCode}) async {
-//   final credential = PhoneAuthProvider.credential(
-//       verificationId: verificationId, smsCode: smsCode);
-//   try {
-//     await FirebaseHelpers.fireAuth.signInWithCredential(credential);
-//     Get.to(const NavigationMenu());
-//   } catch (e) {
-//     Get.snackbar("Error", '$e');
-//     print(" Ahmad Code Error::::: $e");
-//   }
-// }

@@ -1,3 +1,5 @@
+import 'package:unite/utils/constants/text.dart';
+
 class UserModel {
   final String uid;
   final String email;
@@ -17,24 +19,24 @@ class UserModel {
       required this.password});
 
   factory UserModel.fromFireStore(Map<String, dynamic> json) => UserModel(
-        uid: json['uid'],
-        name: json['name'],
-        email: json['email'],
-        password: json['password'],
-        image: json['image'],
-        lastActive: json['lastActive'].toDate(),
-        isOnline: json['isOnline'] ?? false,
+        uid: json[UTexts.uid],
+        name: json[UTexts.name],
+        email: json[UTexts.email],
+        password: json[UTexts.password],
+        image: json[UTexts.image],
+        lastActive: json[UTexts.lastActive].toDate(),
+        isOnline: json[UTexts.isOnline] ?? false,
       );
 
   Map<String, dynamic> toFireStore() {
     return {
-      "uid": uid,
-      "name": name,
-      "email": email,
-      "password": password,
-      "image": image,
-      "lastActive": lastActive,
-      "isOnline": isOnline,
+      UTexts.uid: uid,
+      UTexts.name: name,
+      UTexts.email: email,
+      UTexts.password: password,
+      UTexts.image: image,
+      UTexts.lastActive: lastActive,
+      UTexts.isOnline: isOnline,
     };
   }
 }

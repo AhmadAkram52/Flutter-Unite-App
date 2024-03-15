@@ -1,3 +1,5 @@
+import 'package:unite/utils/constants/text.dart';
+
 class MessageModel {
   final String senderId;
   final String receiverId;
@@ -11,18 +13,18 @@ class MessageModel {
       required this.messageText});
 
   factory MessageModel.fromFireStore(Map<String, dynamic> json) => MessageModel(
-        senderId: json['senderId'],
-        receiverId: json['receiverId'],
-        messageTime: json['messageTime'],
-        messageText: json['messageText'],
+        senderId: json[UTexts.senderId],
+        receiverId: json[UTexts.receiverId],
+        messageTime: json[UTexts.messageTime],
+        messageText: json[UTexts.messageText],
       );
 
   Map<String, dynamic> toFireStore() {
     return {
-      "senderId": senderId,
-      "receiverId": receiverId,
-      "messageTime": messageTime,
-      "messageText": messageText,
+      UTexts.senderId: senderId,
+      UTexts.receiverId: receiverId,
+      UTexts.messageTime: messageTime,
+      UTexts.messageText: messageText,
     };
   }
 }
