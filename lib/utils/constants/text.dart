@@ -13,10 +13,12 @@ class UTexts {
   static const String lastActive = 'lastActive';
   static const String isOnline = 'isOnline';
   static const String image = 'image';
+  static const String text = 'text';
 
   static const String inboxId = 'inboxId';
   static const String messages = 'Messages';
   static const String lastMessage = 'lastMessage';
+  static const String lastMessageType = 'lastMessageType';
   static const String messageCounter = 'messageCounter';
   static const String messageText = 'messageText';
   static const String messageTime = 'messageTime';

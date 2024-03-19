@@ -16,7 +16,8 @@ class ChatController extends GetxController {
         receiverName: await UHelpers.fetchUserName(id: user[UTexts.uid]),
         receiverId: user[UTexts.uid],
         lastMessage: '',
-        messageCounter: 0);
+        messageCounter: 0,
+        lastMessageType: '');
     FireHelpers.chatsRef
         .doc(UHelpers.sortString(
             '${user[UTexts.uid]}${FireHelpers.currentUserId}'))

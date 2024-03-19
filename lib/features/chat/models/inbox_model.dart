@@ -6,6 +6,7 @@ class InboxModel {
   final String receiverName;
   final String receiverId;
   final String lastMessage;
+  final String lastMessageType;
   final String inboxId;
   final int messageCounter;
 
@@ -16,6 +17,7 @@ class InboxModel {
     required this.receiverName,
     required this.receiverId,
     required this.lastMessage,
+    required this.lastMessageType,
     required this.messageCounter,
   });
 
@@ -28,6 +30,7 @@ class InboxModel {
       lastMessage: json[UTexts.lastMessage],
       inboxId: json[UTexts.inboxId],
       messageCounter: json[UTexts.messageCounter],
+      lastMessageType: json[UTexts.lastMessageType],
     );
   }
 
@@ -38,6 +41,7 @@ class InboxModel {
       UTexts.receiverName: receiverName,
       UTexts.receiverId: receiverId,
       UTexts.lastMessage: lastMessage,
+      UTexts.lastMessageType: lastMessageType,
       UTexts.inboxId: inboxId,
       UTexts.messageCounter: messageCounter,
     };

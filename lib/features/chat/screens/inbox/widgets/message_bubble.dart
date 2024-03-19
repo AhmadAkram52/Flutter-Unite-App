@@ -3,6 +3,7 @@ import 'package:flutter_chat_bubble/chat_bubble.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:unite/utils/constants/enums.dart';
+import 'package:unite/utils/constants/text.dart';
 
 class MessageBubbleView extends StatelessWidget {
   final BuildContext context;
@@ -42,7 +43,7 @@ class MessageBubbleView extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            (messageType == "image")
+            (messageType == UTexts.image)
                 ? Image.network(text)
                 : Text(
                     text,

@@ -26,7 +26,7 @@ class InboxController extends GetxController {
       await addMessage(
           messageText: messageText.value,
           inboxId: inboxId,
-          messageType: 'text');
+          messageType: UTexts.text);
     }
     inputController.clear();
     update(); // This is the GetX way to notify listeners
@@ -55,9 +55,10 @@ class InboxController extends GetxController {
         .doc(inboxId)
         .collection(UTexts.messages)
         .add(message.toFireStore());
-    FireHelpers.chatsRef
-        .doc(inboxId)
-        .update({UTexts.lastMessage: messageText.trimLeft()});
+    FireHelpers.chatsRef.doc(inboxId).update({
+      UTexts.lastMessage: messageText.trimLeft(),
+      UTexts.lastMessageType: messageType,
+    });
   }
 
   onSentImageFromGallery({required String inboxId}) async {
@@ -75,7 +76,9 @@ class InboxController extends GetxController {
           final String imageUrl =
               await FirebaseStorage.instance.ref(fileName).getDownloadURL();
           await addMessage(
-              messageText: imageUrl, inboxId: inboxId, messageType: "image");
+              messageText: imageUrl,
+              inboxId: inboxId,
+              messageType: UTexts.image);
         });
         print('Upload successful');
       } catch (e) {
@@ -101,7 +104,9 @@ class InboxController extends GetxController {
           final String imageUrl =
               await FirebaseStorage.instance.ref(fileName).getDownloadURL();
           await addMessage(
-              messageText: imageUrl, inboxId: inboxId, messageType: 'image');
+              messageText: imageUrl,
+              inboxId: inboxId,
+              messageType: UTexts.image);
         });
         print('Upload successful');
       } catch (e) {
