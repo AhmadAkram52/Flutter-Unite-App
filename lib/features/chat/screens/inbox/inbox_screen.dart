@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:iconsax/iconsax.dart';
 import 'package:unite/features/chat/controllers/inbox_controller.dart';
 import 'package:unite/features/chat/screens/inbox/widgets/bottom_input_field.dart';
 import 'package:unite/features/chat/screens/inbox/widgets/message_bubble.dart';
@@ -18,7 +17,7 @@ class InboxScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final InboxController chatController = Get.put(InboxController());
+    final InboxController inboxCtrl = Get.put(InboxController());
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -83,31 +82,7 @@ class InboxScreen extends StatelessWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.more_vert_rounded),
-            onPressed: () {
-              Get.bottomSheet(
-                  const SizedBox(
-                    height: 150,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Card(
-                          elevation: 5,
-                          color: Colors.grey,
-                          shadowColor: Colors.red,
-                          child: Icon(Iconsax.gallery, size: 50),
-                        ),
-                        Card(
-                          margin: EdgeInsets.all(10),
-                          child: Icon(Iconsax.camera, size: 50),
-                        ),
-                      ],
-                    ),
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  backgroundColor: Colors.white);
-            },
+            onPressed: () {},
           ),
           const SizedBox(width: 10)
         ],
@@ -118,7 +93,7 @@ class InboxScreen extends StatelessWidget {
             Expanded(
               child: GestureDetector(
                 onTap: () {
-                  chatController.focusNode.unfocus();
+                  inboxCtrl.focusNode.unfocus();
                 },
                 child: Align(
                   alignment: Alignment.topCenter,
@@ -144,21 +119,23 @@ class InboxScreen extends StatelessWidget {
                             separatorBuilder: (_, __) => const SizedBox(
                                   height: 5,
                                 ),
-                            controller: chatController.scrollController,
+                            controller: inboxCtrl.scrollController,
                             itemCount: snapshot.data.docs.length,
                             itemBuilder: (context, index) {
                               return MessageBubbleView(
                                 text: snapshot.data.docs[index]
                                     [UTexts.messageText],
                                 context: context,
-                                type: snapshot.data.docs[index]
+                                userType: snapshot.data.docs[index]
                                             [UTexts.senderId] ==
                                         FireHelpers.currentUserId
-                                    ? ChatMessageType.sent
-                                    : ChatMessageType.received,
+                                    ? UserType.sent
+                                    : UserType.received,
                                 messageTime: snapshot
                                     .data.docs[index][UTexts.messageTime]
                                     .toDate(),
+                                messageType: snapshot.data.docs[index]
+                                    [UTexts.messageType],
                               );
                             });
                       } else if (snapshot.hasError) {

@@ -1,4 +1,9 @@
-enum ChatMessageType {
+enum UserType {
   sent,
   received,
+}
+
+enum MessageType {
+  text,
+  image,
 }

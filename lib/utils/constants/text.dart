@@ -20,6 +20,7 @@ class UTexts {
   static const String messageCounter = 'messageCounter';
   static const String messageText = 'messageText';
   static const String messageTime = 'messageTime';
+  static const String messageType = 'messageType';
   static const String noMessage = 'no message';
   static const String senderId = 'senderId';
   static const String senderName = 'senderName';

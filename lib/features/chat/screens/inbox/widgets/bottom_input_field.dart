@@ -40,7 +40,7 @@ class BottomInputField extends StatelessWidget {
                   fillColor: UColors.inputColor,
                   filled: true,
                   contentPadding: const EdgeInsets.only(
-                    right: 42,
+                    right: 80,
                     left: 16,
                     top: 18,
                   ),
@@ -60,18 +60,62 @@ class BottomInputField extends StatelessWidget {
                 bottom: 0,
                 right: 0,
                 child: Obx(() {
-                  return IconButton(
-                      disabledColor: UColors.disable,
-                      color: UColors.primary,
-                      icon: const Icon(
-                        Iconsax.send_21,
-                        size: 32,
-                      ),
-                      onPressed:
-                          (inboxCtrl.messageText.value.trimLeft().isEmpty)
+                  return (inboxCtrl.messageText.value.trimLeft().isEmpty)
+                      ? IconButton(
+                          icon: const Icon(Icons.image),
+                          color: UColors.primary,
+                          onPressed: () {
+                            Get.bottomSheet(
+                                SizedBox(
+                                  height: 150,
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      Card(
+                                        elevation: 5,
+                                        shadowColor: UColors.primary,
+                                        child: IconButton(
+                                          icon: const Icon(Iconsax.gallery,
+                                              size: 50),
+                                          onPressed: () =>
+                                              inboxCtrl.onSentImageFromGallery(
+                                                  inboxId: inboxId),
+                                        ),
+                                      ),
+                                      Card(
+                                        elevation: 5,
+                                        shadowColor: UColors.primary,
+                                        child: IconButton(
+                                          icon: const Icon(Iconsax.camera,
+                                              size: 50),
+                                          onPressed: () =>
+                                              inboxCtrl.onSentImageFromCamera(
+                                                  inboxId: inboxId),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                backgroundColor: Colors.white);
+                          },
+                        )
+                      : IconButton(
+                          disabledColor: UColors.disable,
+                          color: UColors.primary,
+                          icon: const Icon(
+                            Iconsax.send_21,
+                            size: 32,
+                          ),
+                          onPressed: (inboxCtrl.messageText.value
+                                  .trimLeft()
+                                  .isEmpty)
                               ? null
                               : () {
-                                  inboxCtrl.onSentMessage(inboxId: inboxId);
+                                  inboxCtrl.onSentTextMessage(inboxId: inboxId);
                                 });
                 }),
               ),

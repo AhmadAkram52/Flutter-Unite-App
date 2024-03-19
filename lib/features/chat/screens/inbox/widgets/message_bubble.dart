@@ -7,15 +7,18 @@ import 'package:unite/utils/constants/enums.dart';
 class MessageBubbleView extends StatelessWidget {
   final BuildContext context;
   final String text;
-  final ChatMessageType type;
+  final UserType userType;
+  final String messageType;
   final DateTime messageTime;
 
-  const MessageBubbleView(
-      {super.key,
-      required this.context,
-      required this.text,
-      required this.messageTime,
-      required this.type});
+  const MessageBubbleView({
+    super.key,
+    required this.context,
+    required this.text,
+    required this.messageTime,
+    required this.userType,
+    required this.messageType,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -23,15 +26,15 @@ class MessageBubbleView extends StatelessWidget {
       padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
       clipper: ChatBubbleClipper5(
         // type: BubbleType.receiverBubble,
-        type: type == ChatMessageType.sent
+        type: userType == UserType.sent
             ? BubbleType.sendBubble
             : BubbleType.receiverBubble,
       ),
       alignment:
-          type == ChatMessageType.sent ? Alignment.topRight : Alignment.topLeft,
+          userType == UserType.sent ? Alignment.topRight : Alignment.topLeft,
       margin: const EdgeInsets.only(top: 10),
       backGroundColor:
-          type == ChatMessageType.sent ? Colors.blue : const Color(0xffE7E7ED),
+          userType == UserType.sent ? Colors.blue : const Color(0xffE7E7ED),
       child: Container(
         constraints: BoxConstraints(
           maxWidth: Get.width * 0.7,
@@ -39,13 +42,15 @@ class MessageBubbleView extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            Text(
-              text,
-              style: TextStyle(
-                  color: type == ChatMessageType.sent
-                      ? Colors.white
-                      : Colors.black),
-            ),
+            (messageType == "image")
+                ? Image.network(text)
+                : Text(
+                    text,
+                    style: TextStyle(
+                        color: userType == UserType.sent
+                            ? Colors.white
+                            : Colors.black),
+                  ),
             Text(
               DateFormat.Hm().format(messageTime).toString(),
               style: const TextStyle(color: Color(0xff646060)),
