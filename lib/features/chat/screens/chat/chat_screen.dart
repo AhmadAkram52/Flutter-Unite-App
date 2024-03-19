@@ -96,8 +96,12 @@ class ChatScreen extends StatelessWidget {
                                   [UTexts.receiverName])
                               : Text(snapshot.data?.docs[index]
                                   [UTexts.senderName]),
-                          subtitle: Text(
-                              snapshot.data?.docs[index][UTexts.lastMessage]),
+                          subtitle: snapshot.data?.docs[index]
+                                      [UTexts.lastMessageType] ==
+                                  UTexts.image
+                              ? const Text("Image")
+                              : Text(snapshot.data?.docs[index]
+                                  [UTexts.lastMessage]),
                           trailing: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.end,
