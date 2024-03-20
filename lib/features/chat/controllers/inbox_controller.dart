@@ -8,6 +8,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:unite/features/chat/models/message_model.dart';
 import 'package:unite/utils/constants/text.dart';
 import 'package:unite/utils/helper/firebase_helper.dart';
+import 'package:video_player/video_player.dart';
 
 class InboxController extends GetxController {
   /* Variables */
@@ -29,6 +30,7 @@ class InboxController extends GetxController {
           messageType: UTexts.text);
     }
     inputController.clear();
+    messageText.value = '';
     update(); // This is the GetX way to notify listeners
   }
 
@@ -62,12 +64,15 @@ class InboxController extends GetxController {
   }
 
   onSentImageFromGallery({required String inboxId}) async {
-    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+    final XFile? image = await picker.pickMedia();
+    // final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+    final String messageType;
     if (image != null) {
       Navigator.pop(Get.context!);
       File file = File(image.path);
+      String fileType = file.path.split('.').last; // Get file extension
       String fileName =
-          'ahmad/${DateTime.now().millisecondsSinceEpoch.toString()}_${Random().nextInt(10000)}.jpg'; // Define an appropriate path and file name
+          'ahmad/${DateTime.now().millisecondsSinceEpoch.toString()}_${Random().nextInt(10000)}.$fileType'; // Define an appropriate path and file name
       try {
         await FirebaseStorage.instance
             .ref(fileName)
@@ -78,7 +83,7 @@ class InboxController extends GetxController {
           await addMessage(
               messageText: imageUrl,
               inboxId: inboxId,
-              messageType: UTexts.image);
+              messageType: getMessageType(fileType));
         });
         print('Upload successful');
       } catch (e) {
@@ -115,5 +120,76 @@ class InboxController extends GetxController {
     } else {
       print('No image selected.');
     }
+  }
+
+  String getMessageType(String extension) {
+    if (extension == 'jpg') {
+      return UTexts.image;
+    } else if (extension == 'mp4') {
+      return UTexts.video;
+    } else {
+      return extension;
+    }
+  }
+}
+
+class VideoPlayerScreen extends StatefulWidget {
+  final String videoUrl;
+
+  const VideoPlayerScreen({super.key, required this.videoUrl});
+
+  @override
+  _VideoPlayerScreenState createState() => _VideoPlayerScreenState();
+}
+
+class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
+  late VideoPlayerController controller;
+
+  @override
+  void initState() {
+    super.initState();
+    controller = VideoPlayerController.networkUrl(Uri.parse(widget.videoUrl))
+      ..initialize().then((_) {
+        setState(() {});
+      });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return controller.value.isInitialized
+        ? Stack(
+            alignment: Alignment.center,
+            children: [
+              AspectRatio(
+                aspectRatio: controller.value.aspectRatio,
+                child: VideoPlayer(controller),
+              ),
+              IconButton(
+                  style:
+                      IconButton.styleFrom(backgroundColor: Colors.blueAccent),
+                  onPressed: () {
+                    controller.value.isPlaying
+                        ? controller.pause()
+                        : controller.play();
+                    setState(() {});
+                  },
+                  icon: controller.value.isPlaying
+                      ? const Icon(
+                          Icons.pause,
+                          size: 50,
+                        )
+                      : const Icon(
+                          Icons.play_arrow,
+                          size: 50,
+                        )),
+            ],
+          )
+        : const CircularProgressIndicator();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    controller.dispose();
   }
 }

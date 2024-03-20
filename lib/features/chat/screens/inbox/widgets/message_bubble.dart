@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_chat_bubble/chat_bubble.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:unite/features/chat/controllers/inbox_controller.dart';
 import 'package:unite/utils/constants/enums.dart';
 import 'package:unite/utils/constants/text.dart';
 
-class MessageBubbleView extends StatelessWidget {
+class MessageBubbleView extends StatefulWidget {
   final BuildContext context;
   final String text;
   final UserType userType;
@@ -22,20 +23,27 @@ class MessageBubbleView extends StatelessWidget {
   });
 
   @override
+  State<MessageBubbleView> createState() => _MessageBubbleViewState();
+}
+
+class _MessageBubbleViewState extends State<MessageBubbleView> {
+  @override
   Widget build(BuildContext context) {
     return ChatBubble(
       padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
       clipper: ChatBubbleClipper5(
         // type: BubbleType.receiverBubble,
-        type: userType == UserType.sent
+        type: widget.userType == UserType.sent
             ? BubbleType.sendBubble
             : BubbleType.receiverBubble,
       ),
-      alignment:
-          userType == UserType.sent ? Alignment.topRight : Alignment.topLeft,
+      alignment: widget.userType == UserType.sent
+          ? Alignment.topRight
+          : Alignment.topLeft,
       margin: const EdgeInsets.only(top: 10),
-      backGroundColor:
-          userType == UserType.sent ? Colors.blue : const Color(0xffE7E7ED),
+      backGroundColor: widget.userType == UserType.sent
+          ? Colors.blue
+          : const Color(0xffE7E7ED),
       child: Container(
         constraints: BoxConstraints(
           maxWidth: Get.width * 0.7,
@@ -43,17 +51,22 @@ class MessageBubbleView extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            (messageType == UTexts.image)
-                ? Image.network(text)
-                : Text(
-                    text,
-                    style: TextStyle(
-                        color: userType == UserType.sent
-                            ? Colors.white
-                            : Colors.black),
-                  ),
+            if (widget.messageType == UTexts.image)
+              Image.network(widget.text)
+            else if (widget.messageType == UTexts.video)
+              VideoPlayerScreen(
+                videoUrl: widget.text,
+              )
+            else
+              Text(
+                widget.text,
+                style: TextStyle(
+                    color: widget.userType == UserType.sent
+                        ? Colors.white
+                        : Colors.black),
+              ),
             Text(
-              DateFormat.Hm().format(messageTime).toString(),
+              DateFormat.Hm().format(widget.messageTime).toString(),
               style: const TextStyle(color: Color(0xff646060)),
             ),
           ],

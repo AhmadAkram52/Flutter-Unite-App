@@ -13,6 +13,7 @@ class UTexts {
   static const String lastActive = 'lastActive';
   static const String isOnline = 'isOnline';
   static const String image = 'image';
+  static const String video = 'video';
   static const String text = 'text';
 
   static const String inboxId = 'inboxId';
